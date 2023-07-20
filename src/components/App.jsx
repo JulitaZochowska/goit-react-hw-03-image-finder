@@ -1,3 +1,7 @@
+import Searchbar from './Searchbar';
+import ImageGallery from './ImageGallery';
+import ImageGalleryItem from './ImageGalleryItem';
+
 export const App = () => {
   return (
     <div
@@ -7,10 +11,12 @@ export const App = () => {
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: 40,
-        color: '#010101'
+        color: '#010101',
       }}
     >
-      React homework template
+      <Searchbar />
+      <ImageGallery />
+      <ImageGalleryItem />
     </div>
   );
 };
