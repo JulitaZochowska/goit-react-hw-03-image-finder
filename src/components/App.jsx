@@ -1,6 +1,7 @@
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
+import { Dna } from 'react-loader-spinner';
 
 import React, { Component } from 'react';
 
@@ -64,6 +65,7 @@ class App extends Component {
       const response = await fetch(
         `https://pixabay.com/api/?q=${this.state.searchInput}&page=${this.state.page}&key=36881053-d0d1537e2fca48fbbc934d91b&image_type=photo&orientation=horizontal&per_page=${this.state.perPage}`
       );
+
       return response.json(); // Nie jestem pewien, czy używaliście tego w ten sposób - bazowałem na dokumentacji https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
     } catch (error) {
       console.error(error);
@@ -78,11 +80,21 @@ class App extends Component {
       <div className={css.App}>
         <Searchbar onSubmit={this.updateSearchInput} />
         <ImageGallery images={this.state.imageGallery} />
-        {this.state.isLoadMoreButtonEnabled ? (
-          <Button onClick={this.incrementPage} />
-        ) : (
-          ''
-        )}
+        <div className={css.buttonLoaderWrapper}>
+          <Dna
+            visible={this.state.isLoading}
+            height="80"
+            width="80"
+            ariaLabel="dna-loading"
+            wrapperStyle={{}}
+            wrapperClass="dna-wrapper"
+          />
+          {this.state.isLoadMoreButtonEnabled ? (
+            <Button onClick={this.incrementPage} />
+          ) : (
+            ''
+          )}
+        </div>
 
         {/* TIP: Do rozmieszczenia kolejnych komponentów zobacz sobie
         App.module.css i niewykorzystane style - powinny dać Ci mały "hint" */}
