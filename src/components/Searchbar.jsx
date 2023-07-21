@@ -17,7 +17,7 @@ class Searchbar extends Component {
     const { value, name } = e.target;
     this.setState({ [name]: value });
     // name odnosi się do name="inputSearch", a value do value={this.state.inputSearch} w <input /> poniżej
-    // Możesz podobnie wchodzić do innych property obiektu
+    // Mozna podobnie wchodzić do innych property obiektu
   };
 
   render() {

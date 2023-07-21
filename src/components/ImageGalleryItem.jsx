@@ -5,10 +5,15 @@ import css from './ImageGalleryItem.module.css';
 
 class ImageGalleryItem extends Component {
   render() {
-    const { src, tag } = this.props;
+    const { src, tag, onClick } = this.props;
     return (
       <li className={css.ImageGalleryItem}>
-        <img className={css['ImageGalleryItem-image']} src={src} alt={tag} />
+        <img
+          onClick={onClick}
+          className={css['ImageGalleryItem-image']}
+          src={src}
+          alt={tag}
+        />
       </li>
     );
   }
@@ -17,6 +22,7 @@ class ImageGalleryItem extends Component {
 ImageGalleryItem.propTypes = {
   src: PropTypes.string,
   tag: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default ImageGalleryItem;

@@ -6,12 +6,15 @@ import { Dna } from 'react-loader-spinner';
 import React, { Component } from 'react';
 
 import css from './App.module.css';
+import Modal from './Modal';
 
 const INITIAL_STATE = {
   searchInput: '',
+  largeImageURI: '',
   imageGallery: [],
   totalHits: 0,
   isLoading: false,
+  isModalOpen: false,
   isLoadMoreButtonEnabled: false,
   page: 1,
   perPage: 12,
@@ -30,6 +33,14 @@ class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  selectLargeImage = uri => {
+    this.setState({ largeImageURI: uri, isModalOpen: true });
+  };
+
   async componentDidUpdate(prevProps, prevState) {
     console.log(this.state);
     const { searchInput, isLoading, totalHits, page, perPage, imageGallery } =
@@ -41,8 +52,7 @@ class App extends Component {
       const data = await this.fetchImages();
       this.setState(prevState => ({
         imageGallery: [...imageGallery, ...data.hits],
-        totalHits: data.totalHits, // Przyda się do przycisku "load more" - będziesz porównywać ilość wyświetlonych obrazków z tym "totalHits" i na tej podstawie wyświetlać przycisk. ?
-        // Najlepiej przygotuj sobie poprzednią pracę domową z galerią - bedą tu baaaaaaaardzo podobne mechanizmy
+        totalHits: data.totalHits, // Przyda się do przycisku "load more" - będę porównywać ilość wyświetlonych obrazków z tym "totalHits" i na tej podstawie wyświetlać przycisk.
       }));
     }
 
@@ -66,7 +76,7 @@ class App extends Component {
         `https://pixabay.com/api/?q=${this.state.searchInput}&page=${this.state.page}&key=36881053-d0d1537e2fca48fbbc934d91b&image_type=photo&orientation=horizontal&per_page=${this.state.perPage}`
       );
 
-      return response.json(); // Nie jestem pewien, czy używaliście tego w ten sposób - bazowałem na dokumentacji https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+      return response.json();
     } catch (error) {
       console.error(error);
     } finally {
@@ -79,7 +89,10 @@ class App extends Component {
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.updateSearchInput} />
-        <ImageGallery images={this.state.imageGallery} />
+        <ImageGallery
+          images={this.state.imageGallery}
+          onEnlargeImage={this.selectLargeImage}
+        />
         <div className={css.buttonLoaderWrapper}>
           <Dna
             visible={this.state.isLoading}
@@ -89,25 +102,13 @@ class App extends Component {
             wrapperStyle={{}}
             wrapperClass="dna-wrapper"
           />
-          {this.state.isLoadMoreButtonEnabled ? (
+          {this.state.isLoadMoreButtonEnabled && (
             <Button onClick={this.incrementPage} />
-          ) : (
-            ''
           )}
         </div>
-
-        {/* TIP: Do rozmieszczenia kolejnych komponentów zobacz sobie
-        App.module.css i niewykorzystane style - powinny dać Ci mały "hint" */}
-
-        {/* Warunki do przycisku:
-        1. Nie ma żadnego obrazka - przycisku też nie ma
-        2. Są obrazki i totalHits > page * perPage (chyba) - przycisk jest
-        3. Są obrazi i totalHits <= page * perPage - przycisku brak */}
-
-        {/* Loader:
-        Loader zastępuje przycisk Load More (przy ładowaniu). Jak nie ma obrazków - loader wyświetla się jako jedyny.
-        Co ja bym zrobił - ustawiłbym loader pomiędzy komponentem ImageGallery i pokazywał/chował w zależności od this.state.isLoading.
-        Dodatkowo przycisk Load More powinien być ukryty gdy się ładuje */}
+        {this.state.isModalOpen && (
+          <Modal image={this.state.largeImageURI} onClose={this.closeModal} />
+        )}
       </div>
     );
   }

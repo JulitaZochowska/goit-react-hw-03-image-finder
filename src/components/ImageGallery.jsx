@@ -6,7 +6,7 @@ import css from './ImageGallery.module.css';
 
 class ImageGallery extends Component {
   render() {
-    const { images } = this.props;
+    const { images, onEnlargeImage } = this.props;
     return (
       <ul className={css.ImageGallery}>
         {images.map(image => (
@@ -14,6 +14,7 @@ class ImageGallery extends Component {
             key={image.id}
             src={image.webformatURL}
             tag={image.tags}
+            onClick={() => onEnlargeImage(image.largeImageURL)}
           />
         ))}
       </ul>
@@ -30,6 +31,7 @@ ImageGallery.propTypes = {
       tags: PropTypes.string,
     })
   ),
+  onEnlargeImage: PropTypes.func,
 };
 
 export default ImageGallery;
