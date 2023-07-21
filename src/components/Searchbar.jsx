@@ -1,72 +1,41 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
-// import css from './ContactForm.module.css';
+import css from './Searchbar.module.css';
 
 class Searchbar extends Component {
   state = {
     inputSearch: '',
-    imageGallery: [],
-    isLoading: false,
-    page: 1,
-    per_page: 12,
-  };
-
-  async componentDidMount() {
-    this.fetchImages();
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (inputSearch !== prevState.inputSearch && inputSearch.length > 0) {
-      await this.fetchImages();
-
-      if (inputSearch.length === 0 && imageGallery.length > 0) {
-        this.setState({ imageGallery: {} });
-      }
-    }
-  }
-  fetchImages = async () => {
-    const { inputSearch } = this.state;
-    const response = await fetch(
-      `https://pixabay.com/api/?q=cat&page=1&key=36881053-d0d1537e2fca48fbbc934d91b&image_type=photo&orientation=horizontal&per_page=12`
-    );
-    this.setState({ isLoading: true });
-
-    try {
-      const { page, per_page } = this.state;
-      const data = await response.json();
-      this.setState(prevState => ({ ...prevState, imageGallery: data }));
-    } catch (error) {
-      console.log('errr', error);
-    }
   };
 
   handleSubmit = e => {
-    e.preventDeafult();
-    this.fetchImages();
+    e.preventDefault();
+    this.props.onSubmit(this.state.inputSearch);
   };
 
   handleChange = e => {
-    const { value, inputSearch } = e.target;
-    this.setState({ [inputSearch]: value });
+    const { value, name } = e.target;
+    this.setState({ [name]: value });
+    // name odnosi się do name="inputSearch", a value do value={this.state.inputSearch} w <input /> poniżej
+    // Możesz podobnie wchodzić do innych property obiektu
   };
 
   render() {
     return (
-      <header class="searchbar">
-        <form onSubmit={this.handleSubmit} class="form">
-          <button type="submit" class="button">
-            <span class="button-label">Search</span>
+      <header className={css.Searchbar}>
+        <form onSubmit={this.handleSubmit} className={css.SearchForm}>
+          <button type="submit" className={css['SearchForm-button']}>
+            <span className={css['SearchForm-button-label']}>Search</span>
           </button>
 
           <input
-            class="input"
+            className={css['SearchForm-input']}
             type="text"
             name="inputSearch"
             value={this.state.inputSearch}
             onChange={this.handleChange}
-            autocomplete="off"
-            autofocus
+            autoComplete="off"
+            autoFocus
             placeholder="Search images and photos"
           />
         </form>
@@ -75,7 +44,8 @@ class Searchbar extends Component {
   }
 }
 
-// ContactForm.propTypes = {
-//   addContact: PropTypes.func,
-// };
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+};
+
 export default Searchbar;
